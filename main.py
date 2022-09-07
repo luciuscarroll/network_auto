@@ -1,6 +1,6 @@
 from typing import Union
-
 from fastapi import FastAPI
+from actions import config_actions
 
 app = FastAPI()
 
@@ -10,6 +10,8 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.post("/clear_binding/{remote_id}")
+def clear_binding(remote_id: str):
+    print(remote_id)
+    response = config_actions.runClearBinding(remote_id)
+    return response
