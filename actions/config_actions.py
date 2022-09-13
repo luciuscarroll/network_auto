@@ -1,25 +1,22 @@
 from netmiko import ConnectHandler
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+device_type= os.getenv('DEVICE_TYPE')
+host= os.getenv('HOST')
+username= os.getenv('USERNAME')
+password= os.getenv('PASSWORD')
+
 
 ssh_rsvt = ConnectHandler(
-    device_type="cisco_xr",
-    host="10.229.200.6",
-    username="apiuser",
-    password="$tratap@ss",
+    device_type=device_type,
+    host=host,
+    username=username,
+    password=password
 )
 
-# ssh_npls = ConnectHandler(
-#     device_type="cisco_xr",
-#     host="10.229.0.3",
-#     username="apiuser",
-#     password="$tratap@ss",
-# )
-
-# ssh_vrnl = ConnectHandler(
-#     device_type="cisco_xr",
-#     host="10.229.32.4",
-#     username="apiuser",
-#     password="$tratap@ss",
-# )
 
 def clearBinding(remote_id):
     # Get mac address by remote ID
