@@ -172,7 +172,7 @@ def clearBinding(remote_id):
                 split_line[1] = split_line[1].strip()
                 binding_details["lease_remaining"] = split_line[1]   
             else:
-                print("Huh")
+                print("not found")
                
             #if "MAC Address" in line:
                 #mac_address = line.split()[2]
@@ -182,7 +182,7 @@ def clearBinding(remote_id):
         response=ssh_rsvt.send_command(f"clear dhcp ipv4 proxy binding mac-address {binding_details['mac_address']}")
         return({"status": 200, "message": f"Binding cleared for RSVT {remote_id}"})    
     else:
-        return({"status": 404, "message": f"this is not the binding you are looking for"})
+        return({"status": 404, "message": f"Binding not found"})
 
 def runClearBinding(remote_id):
     response = clearBinding(remote_id)
