@@ -1,8 +1,7 @@
-from lib2to3.pgen2.token import OP
 from typing import Optional
 from sqlmodel import SQLModel, Field
 
-class Users (SQLModel, table=True):
+class User (SQLModel, table=True):
     __tablename__ = "users"
 
     id: Optional[int] = Field(default=None, primary_key=True)

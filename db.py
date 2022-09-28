@@ -1,8 +1,22 @@
-from sqlmodel import engine
+from sqlmodel import Session, create_engine
+from dotenv import load_dotenv
+import os
 
-#folling is not correct below
-engine = create_engine("mysql:/username/password/url:port/dbname")
+load_dotenv()
 
+url = os.getenv("DB_URL")
+
+engine = create_engine(url)
+
+session = Session(engine)
+
+def get_db():
+    try:
+        yield session
+    except:
+        session.rollback()
+    finally:
+        session.close()
 
 
 
