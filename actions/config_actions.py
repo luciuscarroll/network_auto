@@ -1,26 +1,7 @@
-from netmiko import ConnectHandler
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-device_type= os.getenv('DEVICE_TYPE')
-host= os.getenv('HOST')
-username= os.getenv('USERNAME')
-password= os.getenv('PASSWORD')
-
-
-ssh_rsvt = ConnectHandler(
-    device_type=device_type,
-    host=host,
-    username=username,
-    password=password
-)
-
-
-def clearBinding(remote_id):
+def clearBinding(ssh_connection,remote_id):
     # Get mac address by remote ID
-    response_rsvt = ssh_rsvt.send_command(f"show dhcp ipv4 proxy binding remote-id {remote_id}")
+    
+    response_rsvt = ssh_connection.send_command(f"show dhcp ipv4 proxy binding remote-id {remote_id}")
     binding_details = {
         "mac_address": None,
         "vrf": None,
@@ -176,15 +157,12 @@ def clearBinding(remote_id):
                 # Clears mac address binded to remote id
                 #ssh_rsvt.send_command(f"clear dhcp ipv4 proxy binding mac-address {mac_address}")
     if binding_details["mac_address"]:
-        response=ssh_rsvt.send_command(f"clear dhcp ipv4 proxy binding mac-address {binding_details['mac_address']}")
+        ssh_connection.send_command(f"clear dhcp ipv4 proxy binding mac-address {binding_details['mac_address']}")
         return({"status": 200, "message": f"Binding cleared for RSVT {remote_id}"})    
     else:
         return({"status": 404, "message": f"Binding not found"})
 
-def runClearBinding(remote_id):
-    response = clearBinding(remote_id)
-    # Disconnects from Cisco Router
-    ssh_rsvt.disconnect()
-    return response
 
-    
+def transciever_phy(ssh_connection,transciever):
+    response_rsvt = ssh_connection.send_command(f"show controllers {transciever} phy")
+    print(response_rsvt)

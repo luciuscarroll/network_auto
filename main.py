@@ -1,28 +1,30 @@
-from typing import Union
-from fastapi import FastAPI, Depends
-from sqlmodel import SQLModel, Session
-from db import engine, get_db
-from actions import (
-    config_actions,
-    radius_actions
-)
-
-SQLModel.metadata.create_all(engine)
+import imp
+from urllib import response
+from fastapi import FastAPI
+from actions import config_actions
+from ssh_connector import get_connection
 
 app = FastAPI()
 
 
-@app.get("/user_by_id/{id}")
-def get_by_id(
-    id: int,
-    db: Session = Depends(get_db())
-):
-    user = radius_actions.get_user(db,id)
-    return user
+@app.get("/")
+def read_root():
+    return {"Remember": "/docs"}
 
 
 @app.post("/clear_binding/{remote_id}")
 def clear_binding(remote_id: str):
     print(remote_id)
-    response = config_actions.runClearBinding(remote_id)
+    ssh_connection = get_connection()
+    response = config_actions.clearBinding(ssh_connection,remote_id)
+    ssh_connection.disconnect()
+    return response
+
+
+@app.get("/transciever_phy/")
+def get_transciever_phy(transciever: str):
+    print(transciever)
+    ssh_connection = get_connection()
+    response = config_actions.transciever_phy(ssh_connection,transciever)
+    ssh_connection.disconnect()
     return response
