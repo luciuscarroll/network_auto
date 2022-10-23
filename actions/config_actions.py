@@ -1,3 +1,5 @@
+from schemas.Configs import PhysicalInterface
+
 def clearBinding(ssh_connection,remote_id):
     # Get mac address by remote ID
     
@@ -148,10 +150,7 @@ def clearBinding(ssh_connection,remote_id):
                 binding_details["route_success"] = split_line[1]
             elif split_line[0] == "Lease remaining":
                 split_line[1] = split_line[1].strip()
-                binding_details["lease_remaining"] = split_line[1]   
-            else:
-                print("not found")
-               
+                binding_details["lease_remaining"] = split_line[1]             
             #if "MAC Address" in line:
                 #mac_address = line.split()[2]
                 # Clears mac address binded to remote id
@@ -163,6 +162,38 @@ def clearBinding(ssh_connection,remote_id):
         return({"status": 404, "message": f"Binding not found"})
 
 
-def transciever_phy(ssh_connection,transciever):
+def transciever_phy(ssh_connection,transciever)->PhysicalInterface:
     response_rsvt = ssh_connection.send_command(f"show controllers {transciever} phy")
-    print(response_rsvt)
+    transciever_details = PhysicalInterface
+
+    lines = response_rsvt.split("\n")
+    for line in lines:
+        if ":" in line:
+            line = line.replace("\t","")
+            split_line = line.split(":")
+            if split_line[0] == "Xcvr Type":
+                split_line[1] = split_line[1].strip()
+                transciever_details.transciever_type = split_line[1]
+            elif split_line[0] == "Xcvr Code":
+                split_line[1] = split_line[1].strip()
+                transciever_details.transciever_part_number = split_line[1]
+            elif split_line[0] == "Laser wavelength":
+                split_line[1] = split_line[1].strip()
+                details = split_line[1].split(" (")
+                transciever_details.laser_wavelength = details[0]
+            elif split_line[0] == "Tx Power":
+                split_line[1] = split_line[1].strip()
+                transciever_details.transmit_power = split_line[1]
+            elif split_line[0] == "Rx Power":
+                split_line[1] = split_line[1].strip()
+                transciever_details.recieve_power = split_line[1]
+            elif split_line[0] == "Vendor Name":
+                split_line[1] = split_line[1].strip()
+                transciever_details.vendor_name = split_line[1]
+            elif split_line[0] == "PHY data for interface":
+                split_line[1] = split_line[1].strip()
+                transciever_details.interface = split_line[1]
+    if transciever_details != None:
+        return transciever_details
+    else:
+        return None

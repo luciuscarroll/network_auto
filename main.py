@@ -1,5 +1,3 @@
-import imp
-from urllib import response
 from fastapi import FastAPI
 from actions import config_actions
 from ssh_connector import get_connection
@@ -27,4 +25,6 @@ def get_transciever_phy(transciever: str):
     ssh_connection = get_connection()
     response = config_actions.transciever_phy(ssh_connection,transciever)
     ssh_connection.disconnect()
-    return response
+    if response == None:
+        return {"status": 404, "message": "Optic not present"}
+    return {"status": 202, "message": response}
