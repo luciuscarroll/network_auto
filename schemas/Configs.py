@@ -1,50 +1,50 @@
+from optparse import OptionConflictError
 from typing import Optional
 from pydantic import BaseModel
 from typing import Optional
 
-class DhcpBinding(Basemodel):
-    mac_address: str = Optional[None]
-    vrf: str = Optional[None]
-    ip_address: str = Optional[None]
-    server_vrf: str = Optional[None]
-    giaddr_from_client: str = Optional[None]
-    giaddr_to_server: str = Optional[None]
-    server_ip_address_to_client: str = Optional[None]
-    server_ip_address: str = Optional[None]
-    received_circuit_id: str = Optional[None]
-    insert_circuit_id: str = Optional[None]
-    received_remote_id: str = Optional[None]
-    inserted_remote_id: str = Optional[None]
-    recieved_VSISO: str = Optional[None]
-    inserted_VSISO: str = Optional[None]
-    Auth_on_recieved_relay: str = Optional[None]
-    param_request_option: str = Optional[None]
-    saved_options: str = Optional[None]
-    profile: str = Optional[None]
-    state: str = Optional[None]
-    lease: str = Optional[None]
-    lease_remaining: str = Optional[None]
-    client_id: str = Optional[None]
-    access_interface: str = Optional[None]
-    access_vrf: str = Optional[None]
-    subsriber_label: str = Optional[None]
-    srg_state: str = Optional[None]
-    event_history: str = Optional[None]
-    session_start: str = Optional[None]
-    packet_discover: str = Optional[None]
-    dpm_success: str = Optional[None]
-    packet_offer: str = Optional[None]
-    packet_request: str = Optional[None]
-    packet_ack: str = Optional[None]
-    lease_dpm_success: str = Optional[None]
-    route_success: str = Optional[None]
+class DhcpBinding(BaseModel):
+    mac_address: Optional[str] = None
+    vrf: Optional[str] = None
+    ip_address: Optional[str] = None
+    server_vrf: Optional[str] = None
+    giaddr_from_client: Optional[str] = None
+    giaddr_to_server: Optional[str] = None
+    server_ip_address_to_client: Optional[str] = None
+    server_ip_address: Optional[str] = None
+    received_circuit_id: Optional[str] = None
+    insert_circuit_id: Optional[str] = None
+    received_remote_id: Optional[str] = None
+    inserted_remote_id: Optional[str] = None
+    recieved_VSISO: Optional[str] = None
+    inserted_VSISO: Optional[str] = None
+    Auth_on_recieved_relay: Optional[str] = None
+    param_request_option: Optional[str] = None
+    saved_options: Optional[str] = None
+    profile: Optional[str] = None
+    state: Optional[str] = None
+    lease: Optional[str] = None
+    lease_remaining: Optional[str] = None
+    client_id: Optional[str] = None
+    access_interface: Optional[str] = None
+    access_vrf: Optional[str] = None
+    subsriber_label: Optional[str] = None
+    srg_state: Optional[str] = None
+    event_history: Optional[str] = None
+    session_start: Optional[str] = None
+    packet_discover: Optional[str] = None
+    dpm_success: Optional[str] = None
+    packet_offer: Optional[str] = None
+    packet_request: Optional[str] = None
+    packet_ack: Optional[str] = None
+    lease_dpm_success: Optional[str] = None
+    route_success: Optional[str] = None
 
 class PhysicalInterface(BaseModel):
-    transciever_type: str = Optional[None]
-    transciever_part_number: str = Optional[None]
-    laser_wavelength: str = Optional[None]
-    transmit_power: str = Optional[None]
-    recieve_power: str = Optional[None]
-    vendor_name: str = Optional[None]
-    interface: str = Optional[None]
-
+    transciever_type: Optional[str] = None
+    transciever_part_number: Optional[str] = None
+    laser_wavelength: Optional[str] = None
+    transmit_power: Optional[str] = None
+    recieve_power: Optional[str] = None
+    vendor_name: Optional[str] = None
+    interface: Optional[str] = None

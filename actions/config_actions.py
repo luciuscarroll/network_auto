@@ -1,11 +1,10 @@
-from schemas.Configs import PhysicalInterface
-from schemas.Configs import DhcpBinding
+from schemas.Configs import PhysicalInterface, DhcpBinding
 
 def clearBinding(ssh_connection,remote_id)->DhcpBinding:
     # Get mac address by remote ID
     
     response_rsvt = ssh_connection.send_command(f"show dhcp ipv4 proxy binding remote-id {remote_id}")
-    binding_details = DhcpBinding
+    binding_details = DhcpBinding()
 
     lines = response_rsvt.split("\n")
     for line in lines:
@@ -18,16 +17,16 @@ def clearBinding(ssh_connection,remote_id)->DhcpBinding:
                 #mac_address = line.split()[2]
                 #Clears mac address bound to remote id
                 #ssh_rsvt.send_command(f"clear dhcp ipv4 proxy binding mac-address {mac_address}")
-    if binding_details["mac_address"]:
-        ssh_connection.send_command(f"clear dhcp ipv4 proxy binding mac-address {binding_details['mac_address']}")
-        return({"status": 200, "message": f"Binding cleared for RSVT {remote_id}"})    
+    if binding_details.mac_address:
+        ssh_connection.send_command(f"clear dhcp ipv4 proxy binding mac-address {binding_details.mac_address}")
+        return True    
     else:
-        return({"status": 404, "message": f"Binding not found for {remote_id}"})
+        return False
 
 
 def transciever_phy(ssh_connection,transciever)->PhysicalInterface:
     response_rsvt = ssh_connection.send_command(f"show controllers {transciever} phy")
-    transciever_details = PhysicalInterface
+    transciever_details = PhysicalInterface()
 
     lines = response_rsvt.split("\n")
     for line in lines:

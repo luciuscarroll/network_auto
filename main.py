@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from actions import config_actions
 from ssh_connector import get_connection
+from schemas.Configs import PhysicalInterface, DhcpBinding
 
 app = FastAPI()
 
@@ -16,7 +17,10 @@ def clear_binding(remote_id: str):
     ssh_connection = get_connection()
     response = config_actions.clearBinding(ssh_connection,remote_id)
     ssh_connection.disconnect()
-    return response
+    if response:
+        return({"status": 200, "message": f"Binding cleared for RSVT {remote_id}"})    
+    else:
+        return({"status": 404, "message": f"Binding not found for {remote_id}"})
 
 
 @app.get("/transciever_phy/")
