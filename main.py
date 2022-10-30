@@ -1,7 +1,10 @@
+import imp
+from pickle import EMPTY_LIST
 from fastapi import FastAPI
 from actions import config_actions, netconfig_actions
 from ssh_connector import get_connection
 from schemas.Configs import PhysicalInterface, DhcpBinding
+from typing import List
 
 app = FastAPI()
 
@@ -38,3 +41,28 @@ def get_transciever_phy(transciever: str):
 def get_config():
     netconfig_actions.getconfig()
     return {"status": 202, "message": "here is the config"}
+
+
+
+@app.post("/clear_bindings/")
+def clear_bindings(remote_ids: List[str]):
+    print(remote_ids)
+    failed_ids = []
+    ssh_connection = get_connection()
+    for id in remote_ids:
+        response = config_actions.clearBinding(ssh_connection,id)
+        if not response:
+            failed_ids.append(id)
+    ssh_connection.disconnect()
+    if len(failed_ids)>0:
+        return({"status": 200, "message": "There were usernames with no binding present","not_bound":failed_ids})    
+    else:
+        return({"status": 200, "message": "All bindings cleared"})
+
+
+
+
+
+
+
+# "lab-dream-machine","labtest-1-3","u6xw","gpr8802x"
