@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from actions import config_actions
+from actions import config_actions, netconfig_actions
 from ssh_connector import get_connection
 from schemas.Configs import PhysicalInterface, DhcpBinding
 
@@ -32,3 +32,9 @@ def get_transciever_phy(transciever: str):
     if response == None:
         return {"status": 404, "message": "Optic not present"}
     return {"status": 202, "message": response}
+
+
+@app.get("/get_config/")
+def get_config():
+    netconfig_actions.getconfig()
+    return {"status": 202, "message": "here is the config"}
