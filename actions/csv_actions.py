@@ -1,6 +1,8 @@
 import csv
+import os
 
-with open ('networkauto/actions/usernames.csv', newline='') as csvfile:
+current_directory = os.getcwd()
+with open(f"{current_directory}/actions/usernames.csv", newline='') as csvfile:
     usernamereader = csv.reader(csvfile, delimiter=',')
     usernames = []
     for row in usernamereader:
