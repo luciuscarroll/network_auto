@@ -1,10 +1,10 @@
-import imp
 from pickle import EMPTY_LIST
 from fastapi import FastAPI
-from actions import config_actions, netconfig_actions
+from actions import config_actions, netconfig_actions, csv_actions
 from ssh_connector import get_connection
 from schemas.Configs import PhysicalInterface, DhcpBinding
 from typing import List
+
 
 app = FastAPI()
 
@@ -45,8 +45,8 @@ def get_config():
 
 
 @app.post("/clear_bindings/")
-def clear_bindings(remote_ids: List[str]):
-    print(remote_ids)
+def clear_bindings():
+    remote_ids = csv_actions.get_usernames()
     failed_ids = []
     ssh_connection = get_connection()
     for id in remote_ids:
@@ -61,8 +61,3 @@ def clear_bindings(remote_ids: List[str]):
 
 
 
-
-
-
-
-# "lab-dream-machine","labtest-1-3","u6xw","gpr8802x"
