@@ -8,6 +8,14 @@ device_type= os.getenv('DEVICE_TYPE')
 host= os.getenv('HOST')
 username= os.getenv('USERNAME')
 password= os.getenv('PASSWORD')
+filter_controller_optics = """
+<filter>
+    <controller xmls="urn:ietf:params:xml:ns:yang:ietf-controller-optics">
+        <optics>
+        </optics>
+    </controller>
+</filter>
+"""
 
 
 # mgr_lab = manager.connect(
@@ -24,4 +32,5 @@ def getconfig():
         password = password,
         hostkey_verify = False
     )
-    print()
+    for capabilitiy in mgr_lab.server_capabilities:
+        print(capabilitiy)
