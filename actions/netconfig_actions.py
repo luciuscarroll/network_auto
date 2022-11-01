@@ -1,4 +1,4 @@
-from ncclient import manager
+#from ncclient import manager
 from dotenv import load_dotenv
 import os
 
