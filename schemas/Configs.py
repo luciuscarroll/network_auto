@@ -48,3 +48,4 @@ class PhysicalInterface(BaseModel):
     recieve_power: Optional[str] = None
     vendor_name: Optional[str] = None
     interface: Optional[str] = None
+    admin_state: Optional[str] = None
