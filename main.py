@@ -1,4 +1,3 @@
-from pickle import EMPTY_LIST
 from fastapi import FastAPI
 from actions import config_actions, netconfig_actions, csv_actions
 from ssh_connector import get_connection
@@ -26,11 +25,21 @@ def clear_binding(remote_id: str):
         return({"status": 404, "message": f"Binding not found for {remote_id}"})
 
 
-@app.get("/transciever_phy/")
-def get_transciever_phy(transciever: str):
+@app.get("/transciever_phy_cisco_xr/")
+def get_transciever_phy_cisco_xr(transciever: str):
     print(transciever)
     ssh_connection = get_connection()
-    response = config_actions.transciever_phy(ssh_connection,transciever)
+    response = config_actions.transciever_phy_cisco_xr(ssh_connection,transciever)
+    ssh_connection.disconnect()
+    if response == None:
+        return {"status": 404, "message": "Optic not present"}
+    return {"status": 202, "message": response}
+
+@app.get("/transciever_phy_cisco_xe/")
+def get_transciever_phy_cisco_xe(transciever: str):
+    print(transciever)
+    ssh_connection = get_connection()
+    response = config_actions.transciever_phy_cisco_xe(ssh_connection,transciever)
     ssh_connection.disconnect()
     if response == None:
         return {"status": 404, "message": "Optic not present"}
