@@ -3,6 +3,7 @@ from actions import config_actions, netconfig_actions, csv_actions
 from ssh_connector import get_connection
 # from schemas.Configs import PhysicalInterface, DhcpBinding
 from typing import List
+from schemas.inputs import TranscieverInput
 
 app = FastAPI()
 
@@ -22,12 +23,12 @@ def get_transciever_phy_cisco_xr(transciever: str):
         return {"status": 404, "message": "Optic not present"}
     return {"status": 202, "message": response}
 
-@app.get("/transciever_phy_cisco_xe/")
+@app.post("/transciever_phy_cisco_xe/")
 #Get Port/tranciever information from Cisco IOS XE devices.
-def get_transciever_phy_cisco_xe(transciever: str):
+def get_transciever_phy_cisco_xe(transciever: TranscieverInput):
     print(transciever)
     ssh_connection = get_connection()
-    response = config_actions.transciever_phy_cisco_xe(ssh_connection,transciever)
+    response = config_actions.transciever_phy_cisco_xe(ssh_connection,transciever.tranciever)
     ssh_connection.disconnect()
     if response == None:
         return {"status": 404, "message": "Optic not present"}
