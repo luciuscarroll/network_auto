@@ -1,4 +1,4 @@
-from schemas.Configs import PhysicalInterface, DhcpBinding
+from schemas.Configs import PhysicalInterface, DhcpBinding, OSPF
 
 def clearBinding(ssh_connection,remote_id)->DhcpBinding:
     # Get mac address by remote ID
@@ -104,5 +104,18 @@ def transciever_phy_cisco_xe(ssh_connection,transciever)->PhysicalInterface:
     else:
         return None
 
-
-
+def ospf(ssh_connection)->OSPF:
+    # Get Cisco XR OSPF information.
+    response_neighbor_detail = ssh_connection.send_command("show ospf neighbor detail")
+    ospf_neighbor_details = OSPF()
+    neighbor_details = response_neighbor_detail.split("\n")
+    neighbor_details.pop(0,1,2)
+    for line in neighbor_details:
+        split_line = line.split(" ")
+        split_line[0] = split_line[0].strip()
+        if split_line[0] == "Neighbor":
+            ospf_neighbor_details.neighbor_id = split_line[1]
+    if neighbor_details != None:
+        return neighbor_details
+    else:
+        return None
