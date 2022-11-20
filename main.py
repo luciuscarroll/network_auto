@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from actions import config_actions, netconfig_actions, csv_actions
+
+from actions import csv_actions, router_actions, subscriber_actions
 from ssh_connector import get_connection
-# from schemas.Configs import PhysicalInterface, DhcpBinding
-from typing import List
 
 app = FastAPI()
 
@@ -16,7 +15,7 @@ def read_root():
 def get_transciever_phy_cisco_xr(transciever: str):
     print(transciever)
     ssh_connection = get_connection()
-    response = config_actions.transciever_phy_cisco_xr(ssh_connection,transciever)
+    response = router_actions.transciever_phy_cisco_xr(ssh_connection,transciever)
     ssh_connection.disconnect()
     if response == None:
         return {"status": 404, "message": "Optic not present"}
@@ -27,7 +26,7 @@ def get_transciever_phy_cisco_xr(transciever: str):
 def get_transciever_phy_cisco_xe(transciever: str):
     print(transciever)
     ssh_connection = get_connection()
-    response = config_actions.transciever_phy_cisco_xe(ssh_connection,transciever)
+    response = router_actions.transciever_phy_cisco_xe(ssh_connection,transciever)
     ssh_connection.disconnect()
     if response == None:
         return {"status": 404, "message": "Optic not present"}
@@ -37,7 +36,7 @@ def get_transciever_phy_cisco_xe(transciever: str):
 #Get information from Cisco XR routers for the OSPF IGP protocol.
 def get_ospf_cisco_xr(ospf: str):
     ssh_connection =get_connection()
-    response = config_actions.ospf(ssh_connection,ospf)
+    response = router_actions.ospf(ssh_connection,ospf)
     ssh_connection.disconnect
     if response:
         return({"status": 200, "message": "here you are you bugger"})
@@ -56,7 +55,7 @@ def get_ospf_cisco_xr(ospf: str):
 def clear_binding(remote_id: str):
     print(remote_id)
     ssh_connection = get_connection()
-    response = config_actions.clearBinding(ssh_connection,remote_id)
+    response = subscriber_actions.clearBinding(ssh_connection,remote_id)
     ssh_connection.disconnect()
     if response:
         return({"status": 200, "message": f"Binding cleared for RSVT {remote_id}"})    
@@ -71,7 +70,7 @@ def clear_bindings():
     failed_ids = []
     ssh_connection = get_connection()
     for id in remote_ids:
-        response = config_actions.clearBinding(ssh_connection,id)
+        response = subscriber_actions.clearBinding(ssh_connection,id)
         if not response:
             failed_ids.append(id)
     ssh_connection.disconnect()
