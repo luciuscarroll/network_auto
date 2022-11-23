@@ -3,7 +3,7 @@ from typing import List
 
 from fastapi import FastAPI
 
-from actions import csv_actions, router_actions, subscriber_actions
+from actions import csv_actions, router_actions, subscriber_actions, save_config_actions
 from schemas.inputs import TranscieverInput
 from ssh_connector import get_connection
 
@@ -82,3 +82,9 @@ def clear_bindings():
         return({"status": 200, "message": "There were usernames with no binding present","not_bound":failed_ids})    
     else:
         return({"status": 200, "message": "All bindings cleared"})
+
+@app.post("/save_configs")
+def save_configs():
+    save_config_actions.save_tmarc_configs()
+    return("saved")
+
