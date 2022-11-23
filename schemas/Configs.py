@@ -1,7 +1,5 @@
-from optparse import OptionConflictError
 from typing import Optional
 from pydantic import BaseModel
-from typing import Optional
 
 class DhcpBinding(BaseModel):
     mac_address: Optional[str] = None
@@ -49,3 +47,9 @@ class PhysicalInterface(BaseModel):
     vendor_name: Optional[str] = None
     interface: Optional[str] = None
     admin_state: Optional[str] = None
+
+class OSPF(BaseModel):
+    neighbor_id: Optional[str] = None
+    area: Optional[str] = None
+    state: Optional[str] = None
+    up_time: Optional[str] = None
