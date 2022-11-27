@@ -6,7 +6,7 @@ load_dotenv()
 
 device_type= os.getenv('DEVICE_TYPE')
 host= os.getenv('HOST')
-username= os.getenv('USERNAME')
+username= os.getenv('API_USER')
 password= os.getenv('PASSWORD')
 filter_controller_optics = """
 <filter>

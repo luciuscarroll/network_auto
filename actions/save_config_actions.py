@@ -21,7 +21,7 @@ headers = {"Content-Type": "application/json", "X-AUTH-TOKEN": auth_token}
 
 
 
-user = os.getenv("USERNAME")
+user = os.getenv("API_USER")
 password = os.getenv("PASSWORD")
 payload = {}
 tftp_server = os.getenv("TFTP_SERVER")
@@ -36,6 +36,7 @@ def save_tmarc_configs():
     device_list = ast.literal_eval(devices_dict_str)
     final_list = []
     count = 0
+    print(f"{user} {password}")
 
     for list in device_list:
         sub_list = {'hostname': list['name'], 'ip_address': list['ipAddress']}
@@ -62,6 +63,8 @@ def save_tmarc_configs():
             copy_text = save_config_tmarc
 
         copy_command = copy_text.encode()
+
+        print(f"{user} {password}")
 
         tn = telnetlib.Telnet(device['ip_address'])
         tn.read_until(b"Username:", timeout=2)

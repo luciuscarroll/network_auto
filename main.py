@@ -12,8 +12,8 @@ app = FastAPI()
 
 @app.get("/")
 #need to setup redirect to /docs sometime.
-async def read_root():
-    return RedirectResponse(127.0.0.1:8000/docs)
+def read_root():
+    print("hello")
 
 @app.get("/transciever_phy_cisco_xr/")
 #Get Port/tranciever information from Cisco IOS XR devices.
