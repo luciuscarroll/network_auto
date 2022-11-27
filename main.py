@@ -12,13 +12,15 @@ app = FastAPI()
 
 
 @app.get("/")
-# need to setup redirect to /docs sometime.
 async def read_root():
     return RedirectResponse("/docs")
+
+#TODO make route to get routers
 
 
 @app.get("/transciever_phy_cisco_xr/")
 # Get Port/tranciever information from Cisco IOS XR devices.
+#TODO combine with xe function and change input to accept router type.
 def get_transciever_phy_cisco_xr(transciever: str):
     print(transciever)
     ssh_connection = get_connection()
