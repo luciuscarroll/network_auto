@@ -36,7 +36,6 @@ def save_tmarc_configs():
     device_list = ast.literal_eval(devices_dict_str)
     final_list = []
     count = 0
-    print(f"{user} {password}")
 
     for list in device_list:
         sub_list = {'hostname': list['name'], 'ip_address': list['ipAddress']}
@@ -64,7 +63,6 @@ def save_tmarc_configs():
 
         copy_command = copy_text.encode()
 
-        print(f"{user} {password}")
 
         tn = telnetlib.Telnet(device['ip_address'])
         tn.read_until(b"Username:", timeout=2)
