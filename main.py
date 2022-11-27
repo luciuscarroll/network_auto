@@ -1,7 +1,8 @@
 # from schemas.Configs import PhysicalInterface, DhcpBinding
 from typing import List
 
-from fastapi import FastAPI
+from fastapi import BackgroundTasks, FastAPI
+from fastapi.responses import RedirectResponse
 
 from actions import csv_actions, router_actions, subscriber_actions, save_config_actions
 from schemas.inputs import TranscieverInput
@@ -11,8 +12,8 @@ app = FastAPI()
 
 @app.get("/")
 #need to setup redirect to /docs sometime.
-def read_root():
-    return {"Remember": "/docs"}
+async def read_root():
+    return RedirectResponse(127.0.0.1:8000/docs)
 
 @app.get("/transciever_phy_cisco_xr/")
 #Get Port/tranciever information from Cisco IOS XR devices.
@@ -84,7 +85,7 @@ def clear_bindings():
         return({"status": 200, "message": "All bindings cleared"})
 
 @app.post("/save_configs")
-def save_configs():
-    save_config_actions.save_tmarc_configs()
+async def save_configs(background_tasks: BackgroundTasks):
+    background_tasks.add_task(save_config_actions.save_tmarc_configs)
     return("saved")
 

@@ -1,30 +1,41 @@
-import telnetlib
-import calendar
-from datetime import datetime
-import time
-import os
-import json
 import ast
+import calendar
+import json
+import os
+import telnetlib
+import time
+from datetime import datetime
+
 import requests
 from dotenv import load_dotenv
+
+from api_logins import sevone_api_login
 
 load_dotenv()
 
 sevone_url= os.getenv("SEVONE_URL")
-auth_token= os.getenv("AUTH_TOKEN")
+auth_token= sevone_api_login()
 headers = {"Content-Type": "application/json", "X-AUTH-TOKEN": auth_token}
+
+
+
+
+
 user = os.getenv("USERNAME")
 password = os.getenv("PASSWORD")
 payload = {}
 tftp_server = os.getenv("TFTP_SERVER")
 
 def save_tmarc_configs():
+    token = sevone_api_login()
+    headers ["X-AUTH-TOKEN"]=token
     response = requests.request("GET", sevone_url, headers=headers, data=payload)
     devices = str(json.loads(response.text))
     device_dict = devices[devices.find("[")+1:devices.find("]")]
     devices_dict_str = "[" + device_dict + "]"
     device_list = ast.literal_eval(devices_dict_str)
     final_list = []
+    count = 0
 
     for list in device_list:
         sub_list = {'hostname': list['name'], 'ip_address': list['ipAddress']}
@@ -69,6 +80,8 @@ def save_tmarc_configs():
         time.sleep(.2)
         tn.write(copy_command)
         output = tn.expect([b"complete", b"failed"], timeout=10)
-        print ("yay")
+        count += 1
+        print (count)
+        time.sleep(1)
 
 
