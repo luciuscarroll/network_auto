@@ -4,6 +4,7 @@ import os
 import requests
 from api_logins import sevone_api_login
 from dotenv import load_dotenv
+from schemas.devices import DeviceInfo
 
 load_dotenv()
 
@@ -28,3 +29,12 @@ def sevone_device_list():
 
 
 # TODO bult other functions to seprate device types.
+def get_all_strata_devices():
+    """gets all devices form sevone returns only devices with STRATA networks in description"""
+    all_devices = sevone_device_list()
+    strata_devices = []
+    for d in all_devices:
+        if d["description"] == "STRATA Networks":
+            device = DeviceInfo(**d)
+            strata_devices.append(device)
+    return strata_devices

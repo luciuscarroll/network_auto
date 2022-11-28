@@ -5,13 +5,11 @@ from netmiko import ConnectHandler
 
 load_dotenv()
 
-device_type = os.getenv("DEVICE_TYPE")
-host = os.getenv("HOST")
 username = os.getenv("API_USER")
 password = os.getenv("PASSWORD")
 
 
-def get_connection():
+def get_connection(device_type, host):
     ssh_rsvt = ConnectHandler(
         device_type=device_type, host=host, username=username, password=password
     )
