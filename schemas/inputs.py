@@ -9,5 +9,5 @@ class TranscieverInput(BaseModel):
     def value_check(cls, v):
         checker = v.split("/")
         if len(checker) != 3:
-            raise ValueError("Must be in form om tex/x/x")
+            raise ValueError("Must be in the form of tex/x/x")
         return v
