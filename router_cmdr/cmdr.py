@@ -13,5 +13,4 @@ def disconnect(connection):
     connection.disconnect()
 
 def cisco_xr_tranciever_phy(connection, transciever):
-    response = connection.send_command(f"show controllers {transciever} all")
-    
+    r
