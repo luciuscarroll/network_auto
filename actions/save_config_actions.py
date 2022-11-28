@@ -1,65 +1,31 @@
-import ast
-import json
 import os
 import telnetlib
 import time
 from datetime import datetime
-import requests
-from dotenv import load_dotenv
+from actions import ext_database_actions
 from api_logins import sevone_api_login
+from dotenv import load_dotenv
 
 load_dotenv()
 
-sevone_url = os.getenv("SEVONE_URL")
-auth_token = sevone_api_login()
-headers = {"Content-Type": "application/json", "X-AUTH-TOKEN": auth_token}
 user = os.getenv("API_USER")
 password = os.getenv("API_PASSWORD")
-payload = {}
-tftp_server = os.getenv("TFTP_SERVER")
-
 
 def save_tmarc_configs():
-    # This function pulls all the Devices from SEVONE. Then checks the device portion of the hostname. Sorts the Tmarc deives types into a list.
+    # This function pulls all the Devices from SEVONE. Using ext_database_actions.
+    # Then checks the device portion of the hostname. Sorts the Tmarc devices into a list.
     # It then splits the Tmarcs into groups to run the correct copy config command.
     # After that it sets up the TELNET session to the Tmarc and sends a write config and copy config command.
-    # TODO move from toekn to device_list to another file. so it can be easily used by other functions.
-    # Logs into SEVONE to pull a list of all devices. Then sorts out the Tmarcs into a seperate list.
-    token = sevone_api_login()
-        # Create SEVONE API token.
-        # This is done from the root directory from file api_logins.py.
-    headers["X-AUTH-TOKEN"] = token
-        # Set headers postion X-AUTH-TOKEN equal to the SEVONE API token.
-    response = requests.request("GET", sevone_url, headers=headers, data=payload)
-        # Calls SEVONE API for all a list of all devices.
-        # sevone_url is pulled from the .env file.
-        # headers postion Content-Type is hardset to application/json
-        # headers postion X-AUTH-TOKEN is set to the sevone API token generated above.
-        # TODO I am unsure what the data=payload line is doing. Need to look into it.
-    devices = str(json.loads(response.text))
-        # Here we have the full Device list from SEVONE. This is in JSON format.
-        # TODO Need to run through it in debugger and see if this can be simplified.
-    #device_dict = devices[devices.find("[") + 1 : devices.find("]")]
-        # finding the [] in thew output and discarding the information outside of them.
-        # TODO Need to run through it in debugger and see if this can be simplified.
-    #devices_dict_str = "[" + device_dict + "]"
-        # TODO Need to understand this better.
-        # TODO Need to run through it in debugger and see if this can be simplified.
-    #devices_dict = "[" + devices + "]"
-        #test1
-    #device_list = devices_dict.split("{")
-        # test1
-    device_list = ast.literal_eval(f"[{devices[devices.find('[') + 1 : devices.find(']')]}]")
-        # test2  
-    #device_list = ast.literal_eval(devices_dict_str)
-        # https://docs.python.org/3/library/ast.html
-        # This creates the Device list dictionary. This is the dictionary we will use to sort out devices.
-        # TODO Need to understand this better.
-        # TODO Need to run through it in debugger and see if this can be simplified.
+    # TODO move token to device_list to another file. so it can be easily used by other functions.
+    # TODO see about sending telnet disconnect.
+
+    device_list = ext_database_actions.sevone_device_list()
+        # Make device_list equal to the imported ext_database_actions funtion sevone_device_list
     tmarc_list = []
-        # This is the tmarc list generated from the for list in device_list loop below.
+        # This is the tmarc list generated from the for loop below.
     count = 0
         # This is used to show that the program is progressing in the terminal.
+        # TODO remove this count eventually.
 
     for list in device_list:
         # Here we take the device_list from SEVONE and pull out just the Tmarcs.
@@ -153,3 +119,7 @@ def save_tmarc_configs():
 
         time.sleep(1)
             # Waits for 1 second between Tmarcs to help my work computer not lose its brains.
+
+
+# TODO look into shipping files to ftp server once they are collected locally.
+# https://docs.python.org/3/library/ftplib.html
