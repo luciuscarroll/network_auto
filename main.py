@@ -24,7 +24,7 @@ async def read_root():
     return RedirectResponse("/docs")
 
 
-@app.post("/transciever_phy", responce_model=PhysicalInterface)
+@app.post("/transciever_phy", response_model=PhysicalInterface)
 def get_transciever_phy(transciever: TranscieverInput):
     """Get Port/tranciever information from Cisco IOS XE devices."""
     ssh_connection = get_connection(transciever.device_type.value)

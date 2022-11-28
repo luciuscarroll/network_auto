@@ -9,8 +9,7 @@ from schemas.devices import DeviceInfo
 load_dotenv()
 
 sevone_url = os.getenv("SEVONE_URL")
-auth_token = sevone_api_login()
-headers = {"Content-Type": "application/json", "X-AUTH-TOKEN": auth_token}
+headers = {"Content-Type": "application/json", "X-AUTH-TOKEN": ""}
 user = os.getenv("API_USER")
 password = os.getenv("API_PASSWORD")
 tftp_server = os.getenv("TFTP_SERVER")
