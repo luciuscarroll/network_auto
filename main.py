@@ -81,11 +81,11 @@ def clear_binding(devices: List[DeviceInfoRemoteIds]):
         ssh_connection = get_connection(device.device_type.value, device.ipAddress)
         for remote_id in device.remote_ids:
             response = subscriber_actions.clearBinding(ssh_connection, remote_id)
+            if response:
+                clear_binding_results.cleared.append(remote_id) 
+            else:
+                clear_binding_results.not_bound.append(remote_id)
         ssh_connection.disconnect()
-        if response:
-            clear_binding_results.cleared.append(remote_id) 
-        else:
-            clear_binding_results.not_bound.append(remote_id)
     return JSONResponse(
         status_code = 200,
         detail = clear_binding_results
