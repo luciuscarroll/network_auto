@@ -11,7 +11,7 @@ from actions import(
     subscriber_actions, 
     save_config_actions
 )
-from schemas.inputs import TranscieverInput
+from schemas.inputs import TranscieverInput, Message
 from schemas.devices import DeviceInfo, ClearBindingResponse, DeviceInfoRemoteIds
 from schemas.Configs import PhysicalInterface
 from ssh_connector import get_connection
@@ -26,11 +26,17 @@ async def read_root():
     return RedirectResponse("/docs")
 
 
-@app.post("/transciever_phy", response_model=PhysicalInterface)
+@app.post("/transciever_phy", response_model=PhysicalInterface, responses={202: {"model": Message}} )
 def get_transciever_phy(transciever: TranscieverInput):
     """Get Port/tranciever information from Cisco IOS XE devices."""
-    ssh_connection = get_connection(transciever.device_type.value)
+    ssh_connection = get_connection(transciever.device_type.value, transciever.host)
     if transciever.device_type.value == "cisco_xe":
+        checker = transciever.tranciever.split("/")
+        if len(checker) != 3:
+            return JSONResponse (
+                status_code= 422,
+                content= {"message": "Cisco XE transciever must be in the form of tex/x/x"}
+            )
         response = router_actions.transciever_phy_cisco_xe(
             ssh_connection, transciever.tranciever
         )
@@ -42,12 +48,53 @@ def get_transciever_phy(transciever: TranscieverInput):
     if response == None:
         return JSONResponse(
             status_code = 404,
-            detail = "Optic not present"
+            content = "Optic not present"
         ) 
     return JSONResponse(
         status_code = 202,
-        detail = response
+        content = response.dict()
     )
+
+
+@app.post("/clear_bindings", response_model= ClearBindingResponse, responses={200: {"model": ClearBindingResponse},202: {"model": ClearBindingResponse}})
+def clear_binding(devices: List[DeviceInfoRemoteIds]):
+    """Clear DHCP bindings in Cisco IOS XR routers."""
+    clear_binding_results = ClearBindingResponse()
+    for device in devices:
+        ssh_connection = get_connection(device.device_type.value, device.ipAddress)
+        for remote_id in device.remote_ids:
+            response = subscriber_actions.clearBinding(ssh_connection, remote_id)
+            if response:
+                clear_binding_results.cleared.append(remote_id) 
+            else:
+                clear_binding_results.not_bound.append(remote_id)
+        ssh_connection.disconnect()
+    return JSONResponse(
+        status_code = 200,
+        content = clear_binding_results.dict()
+    )
+
+
+@app.post("/save_configs")
+async def save_configs(background_tasks: BackgroundTasks):
+    background_tasks.add_task(save_config_actions.save_tmarc_configs)
+    return "saved"
+
+
+@app.get("/device_list", response_model=List[DeviceInfo])
+def device_list():
+    try:
+        device_list = sevone_actions.get_all_strata_devices()
+        return JSONResponse(
+            status_code=200,
+            detail=device_list
+        )
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            detail=str(e)
+        )
 
 
 @app.get("/ospf_cisco_xr/")
@@ -71,46 +118,6 @@ def get_ospf_cisco_xr(ospf: str):
 # def get_config():
 #     netconfig_actions.getconfig()
 #     return {"status": 202, "message": "here is the config"}
-
-
-@app.post("/clear_bindings", response_model=ClearBindingResponse)
-def clear_binding(devices: List[DeviceInfoRemoteIds]):
-    """Clear DHCP bindings in Cisco IOS XR XE routers."""
-    clear_binding_results = ClearBindingResponse()
-    for device in devices:
-        ssh_connection = get_connection(device.device_type.value, device.ipAddress)
-        for remote_id in device.remote_ids:
-            response = subscriber_actions.clearBinding(ssh_connection, remote_id)
-            if response:
-                clear_binding_results.cleared.append(remote_id) 
-            else:
-                clear_binding_results.not_bound.append(remote_id)
-        ssh_connection.disconnect()
-    return JSONResponse(
-        status_code = 200,
-        detail = clear_binding_results
-    )
-
-@app.post("/save_configs")
-async def save_configs(background_tasks: BackgroundTasks):
-    background_tasks.add_task(save_config_actions.save_tmarc_configs)
-    return "saved"
-
-
-@app.get("/device_list", response_model=List[DeviceInfo])
-def device_list():
-    try:
-        device_list = sevone_actions.get_all_strata_devices()
-        return JSONResponse(
-            status_code=200,
-            detail=device_list
-        )
-    except Exception as e:
-        print(str(e))
-        return JSONResponse(
-            status_code=500,
-            detail=str(e)
-        )
 
 
 

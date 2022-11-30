@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from schemas.enums import Router_Enum
+from typing import Optional
 
 class DeviceInfo(BaseModel):
     name: str | None
@@ -11,5 +12,8 @@ class DeviceInfoRemoteIds(BaseModel):
     device_type: Router_Enum
 
 class ClearBindingResponse(BaseModel):
-    cleared: list[str] | None
-    not_bound: list[str] | None
+    cleared: Optional[list[str]] = []
+    not_bound: Optional[list[str]] = []
+
+    class Config:
+        orm_mode = True
