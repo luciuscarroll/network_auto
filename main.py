@@ -11,10 +11,12 @@ from actions import(
     subscriber_actions, 
     save_config_actions
 )
-from schemas.inputs import TranscieverInput, ClearBindingsInput
-from schemas.devices import DeviceInfo, ClearBindingResponse
+from schemas.inputs import TranscieverInput
+from schemas.devices import DeviceInfo, ClearBindingResponse, DeviceInfoRemoteIds
 from schemas.Configs import PhysicalInterface
 from ssh_connector import get_connection
+
+
 
 app = FastAPI()
 
@@ -72,7 +74,7 @@ def get_ospf_cisco_xr(ospf: str):
 
 
 @app.post("/clear_bindings", response_model=ClearBindingResponse)
-def clear_binding(devices: ClearBindingsInput):
+def clear_binding(devices: List[DeviceInfoRemoteIds]):
     """Clear DHCP bindings in Cisco IOS XR XE routers."""
     clear_binding_results = ClearBindingResponse()
     for device in devices:

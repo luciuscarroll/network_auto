@@ -5,11 +5,11 @@ class DeviceInfo(BaseModel):
     name: str | None
     ipAddress: str | None
 
-class DeviceInfoRemotIds(BaseModel):
+class DeviceInfoRemoteIds(BaseModel):
     ipAddress: str
     remote_ids: list[str]
     device_type: Router_Enum
 
 class ClearBindingResponse(BaseModel):
-    cleared: list[str]
-    not_bound: list[str]
+    cleared: list[str] | None
+    not_bound: list[str] | None

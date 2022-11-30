@@ -6,7 +6,7 @@ from netmiko import ConnectHandler
 load_dotenv()
 
 username = os.getenv("API_USER")
-password = os.getenv("PASSWORD")
+password = os.getenv("API_PASSWORD")
 
 
 def get_connection(device_type, host):
