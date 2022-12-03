@@ -101,7 +101,7 @@ def device_list():
 def get_ospf_cisco_xr(ospf: str):
     """Get information from Cisco XR routers for the OSPF IGP protocol."""
     ssh_connection = get_connection()
-    response = router_actions.ospf(ssh_connection, ospf)
+    response = router_actions.ospf_neighbor_cisco_xr(ssh_connection, ospf)
     ssh_connection.disconnect()
     if response:
         return {"status": 200, "message": "here you are you bugger"}

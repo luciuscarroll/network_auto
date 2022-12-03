@@ -1,7 +1,7 @@
 from schemas.Configs import OSPF, PhysicalInterface
 
 
-def ospf(ssh_connection)->OSPF:
+def ospf_neighbor_cisco_xr(ssh_connection)->OSPF:
     # Get Cisco XR OSPF information.
     response_neighbor_detail = ssh_connection.send_command("show ospf neighbor detail")
     ospf_neighbor_details = OSPF()
