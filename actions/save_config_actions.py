@@ -12,6 +12,7 @@ password = os.getenv("API_PASSWORD")
 tftp_server = os.getenv("TFTP_SERVER")
 
 # TODO look into shipping files to ftp server once they are collected locally.
+# working on TFTP server to send files directly to.
 # https://docs.python.org/3/library/ftplib.html
 
 def save_tmarc_configs():
@@ -65,16 +66,17 @@ def save_tmarc_configs():
             time.sleep(0.2)
 
             tn.write(b"write\n")
-            # sleep here for 2 sec so tmarc has time to write config to memory.
+            # Sleep here for 2 sec so tmarc has time to write config to memory.
             time.sleep(2)
 
             tn.write(copy_command)
-            time.sleep(2)
-            # check how long it takes to send file and change sleep timer.
+            # Sleep here so the tmarc has time to push files to the tftp server.
+            time.sleep(4)
             tn.write(b"exit\n")
 
-            time.sleep(1)
             # Waits for 1 second between Tmarcs to help my work computer not lose its brains.
+            time.sleep(1)
+            
         except Exception as e:
             print(device["name"])
             print(str(e))
