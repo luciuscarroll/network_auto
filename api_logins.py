@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def sevone_api_login():
-    url = os.getenv("SEVONE_API_KEY_URL")
+    url = os.getenv("SEVONE_URL")
 
     payload = json.dumps({
     "name": os.getenv("SEVONE_API_USER"),
@@ -17,7 +17,7 @@ def sevone_api_login():
     'Content-Type': 'application/json',
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", f"{url}authentication/signin", headers=headers, data=payload)
 
     to_dict = json.loads(response.text)
     token = to_dict["token"]

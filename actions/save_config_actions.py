@@ -18,22 +18,12 @@ tftp_server = os.getenv("TFTP_SERVER")
 def save_tmarc_configs():
     """Gets Devices from SEVONE. Sorts the Tmarcs into a list. Save and copies configs"""
 
-    device_list = sevone_actions.sevone_device_list()
-    tmarc_list = []
+    tmarc_list = sevone_actions.get_all_tmarcs()
 
-    for device in device_list:
-        if "-250-" in device["name"]:
-            tmarc_list.append(device)
-        if "-280-" in device["name"]:
-            tmarc_list.append(device)
-        if "-340-" in device["name"]:
-            tmarc_list.append(device)
-        if "-380-" in device["name"]:
-            tmarc_list.append(device)
 
     for device in tmarc_list:
         now = datetime.now()
-        file_name = device["name"] + "-" + now.strftime("%m_%d_%Y-%H_%M_%S")
+        file_name = device["name"] + "-" + now.strftime("%m_%d_%Y-%H_%M")
         save_config_tmarc = (
             f"copy running-config tftp://{tftp_server}/{file_name}.txt\n"
         )

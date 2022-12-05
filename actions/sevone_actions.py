@@ -5,6 +5,8 @@ import requests
 from api_logins import sevone_api_login
 from dotenv import load_dotenv
 from schemas.devices import DeviceInfo
+from pydantic import parse_obj_as
+from typing import List
 
 load_dotenv()
 
@@ -16,24 +18,19 @@ tftp_server = os.getenv("TFTP_SERVER")
 
 
 
-def sevone_device_list():
+def sevone_device_list(group_id):
     """This function pulls all the Devices from SEVONE."""
     token = sevone_api_login()
     headers["X-AUTH-TOKEN"] = token
-    response = requests.request("GET", sevone_url, headers=headers)
-    devices = str(json.loads(response.text))
-    # Remove information outside of the [] so that the data shows up as an interger not a string.
-    device_list = ast.literal_eval(f"[{devices[devices.find('[') + 1 : devices.find(']')]}]")
+    response = requests.request("GET", f"{sevone_url}devicegroups/{group_id}?includeMembers=true", headers=headers)
+    response_dict = json.loads(response.text)
+    device_list = parse_obj_as(List[DeviceInfo], response_dict['devices'])
     return device_list
 
-
-# TODO bult other functions to seprate device types.
-def get_all_strata_devices():
-    """gets all devices form sevone returns only devices with STRATA networks in description"""
-    all_devices = sevone_device_list()
-    strata_devices = []
-    for d in all_devices:
-        if d["description"] == "STRATA Networks":
-            device = DeviceInfo(**d)
-            strata_devices.append(device)
-    return strata_devices
+def get_all_tmarcs():
+    """gets all devices from Sevone, returns only the tmarc devices."""
+    token = sevone_api_login()
+    headers["X-AUTH-TOKEN"] = token
+    response = requests.request("GET", f"{sevone_url}devicegroups/298?includeMembers=true", headers=headers)
+    response_dict = json.loads(response.text)
+    return response_dict["devices"]

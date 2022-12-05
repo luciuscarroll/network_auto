@@ -81,19 +81,16 @@ async def save_configs(background_tasks: BackgroundTasks):
     return "saved"
 
 
-@app.get("/device_list", response_model=List[DeviceInfo])
-def device_list():
+@app.get("/device_list{group_id}", response_model=List[DeviceInfo], responses={202: {"model": Message}})
+def device_list(group_id: int, ):
     try:
-        device_list = sevone_actions.get_all_strata_devices()
-        return JSONResponse(
-            status_code=200,
-            detail=device_list
-        )
+        device_list = sevone_actions.sevone_device_list(group_id)
+        return device_list
     except Exception as e:
         print(str(e))
         return JSONResponse(
             status_code=500,
-            detail=str(e)
+            content=str(e)
         )
 
 
@@ -111,6 +108,12 @@ def get_ospf_cisco_xr(ospf: str):
             "message": "No OSPF stats! IT IS BROKEN! Someone call Lucius!",
         }
 
+@app.get("/test")
+def testy_poo():
+    sevone_actions.get_all_tmarcs()
+    return {"message": "Test Complete"}
+
+
 
 # @app.get("/get_config/")
 # Get router config via NETCONF.
@@ -121,6 +124,8 @@ def get_ospf_cisco_xr(ospf: str):
 
 
 
+
+# http://10.225.254.110/api/v1/devicegroups/298?includeMembers=true
 
 """  "message": [
     {
