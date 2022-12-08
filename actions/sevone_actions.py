@@ -25,11 +25,3 @@ def sevone_device_list(group_id):
     response_dict = json.loads(response.text)
     device_list = parse_obj_as(List[DeviceInfo], response_dict['devices'])
     return device_list
-
-def get_all_tmarcs():
-    """gets all devices from Sevone, returns only the tmarc devices."""
-    token = sevone_api_login()
-    headers["X-AUTH-TOKEN"] = token
-    response = requests.request("GET", f"{sevone_url}devicegroups/298?includeMembers=true", headers=headers)
-    response_dict = json.loads(response.text)
-    return response_dict["devices"]

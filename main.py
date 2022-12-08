@@ -69,12 +69,6 @@ def clear_binding(devices: list[DeviceInfoRemoteIds]):
     return clear_binding_results
 
 
-@app.post("/save_configs")
-async def save_configs(background_tasks: BackgroundTasks):
-    background_tasks.add_task(save_config_actions.save_tmarc_configs)
-    return "saved"
-
-
 @app.get(
     "/device_list{group_id}",
     responses={200: {"model": list[DeviceInfo]}, 500: {"model": Message}},

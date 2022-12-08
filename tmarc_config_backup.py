@@ -4,7 +4,6 @@ import requests
 import telnetlib
 import time
 from datetime import datetime
-from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,9 +15,9 @@ password = os.getenv("API_PASSWORD")
 tftp_server = os.getenv("TFTP_SERVER")
 
 
-class DeviceInfo(BaseModel):
-    name: str | None
-    ipAddress: str | None
+# TODO look into shipping files to ftp server once they are collected locally.
+# working on TFTP server to send files directly to.
+# https://docs.python.org/3/library/ftplib.html
 
 
 def sevone_api_login():
