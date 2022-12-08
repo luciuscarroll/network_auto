@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from schemas.enums import Router_Enum
 
 class DeviceInfo(BaseModel):
+    id: int | None
     name: str | None
     ipAddress: str | None
 
@@ -16,3 +17,7 @@ class ClearBindingResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class SevoneGroup(BaseModel):
+    id: int | None
+    name: str | None

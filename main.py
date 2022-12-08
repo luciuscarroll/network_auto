@@ -5,10 +5,9 @@ from actions import (
     router_actions,
     sevone_actions,
     subscriber_actions,
-    save_config_actions,
 )
 from schemas.inputs import Router_Enum, Message
-from schemas.devices import DeviceInfo, ClearBindingResponse, DeviceInfoRemoteIds
+from schemas.devices import DeviceInfo, ClearBindingResponse, DeviceInfoRemoteIds, SevoneGroup
 from schemas.Configs import PhysicalInterface
 from ssh_connector import get_connection
 
@@ -70,8 +69,28 @@ def clear_binding(devices: list[DeviceInfoRemoteIds]):
 
 
 @app.get(
+    "/group_list",
+    responses={200: {"model": list[SevoneGroup]}, 408: {"model": Message}, 500: {"model": Message}},
+)
+def get_group_list(
+    response: Response
+):
+    try:
+        group_list = sevone_actions.sevone_group_list()
+        return group_list
+    except TimeoutError as e:
+        print(str(e))
+        response.status_code=status.HTTP_408_REQUEST_TIMEOUT
+        return Message(message="Sevone was not reachable. Please try again.")
+    except Exception as e:
+        print(str(e))
+        response.status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        return Message(message=str(e))
+
+
+@app.get(
     "/device_list{group_id}",
-    responses={200: {"model": list[DeviceInfo]}, 500: {"model": Message}},
+    responses={200: {"model": list[DeviceInfo]}, 408: {"model": Message}, 500: {"model": Message}},
 )
 def device_list(
     group_id: int,
@@ -80,6 +99,10 @@ def device_list(
     try:
         device_list = sevone_actions.sevone_device_list(group_id)
         return device_list
+    except TimeoutError as e:
+        print(str(e))
+        response.status_code=status.HTTP_408_REQUEST_TIMEOUT
+        return Message(message="Sevone was not reachable. Please try again.")
     except Exception as e:
         print(str(e))
         response.status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
