@@ -14,12 +14,6 @@ user = os.getenv("API_USER")
 password = os.getenv("API_PASSWORD")
 tftp_server = os.getenv("TFTP_SERVER")
 
-
-# TODO look into shipping files to ftp server once they are collected locally.
-# working on TFTP server to send files directly to.
-# https://docs.python.org/3/library/ftplib.html
-
-
 def sevone_api_login():
     url = os.getenv("SEVONE_URL")
 
@@ -96,9 +90,6 @@ def save_tmarc_configs():
             # Sleep here so the tmarc has time to push files to the tftp server.
             time.sleep(4)
             tn.write(b"exit\n")
-
-            # Waits for 1 second between Tmarcs to help my work computer not lose its brains.
-            time.sleep(1)
             
         except TimeoutError as e:
             print(device["name"])
