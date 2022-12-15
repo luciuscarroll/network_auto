@@ -52,7 +52,7 @@ def save_tmarc_configs():
         now = datetime.now()
         file_name = device["name"] + "-" + now.strftime("%m_%d_%Y-%H_%M")
         save_config_tmarc = (
-            f"copy running-config tftp://{tftp_server}/{file_name}.txt\n"
+            f"copy running-config tftp://{tftp_server}/telco/{file_name}.txt\n"
         )
         save_config_250 = (
             f"copy running-config upload-to {tftp_server} {file_name}.txt\n"
