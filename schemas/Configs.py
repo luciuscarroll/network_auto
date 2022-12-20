@@ -49,6 +49,7 @@ class PhysicalInterface(BaseModel):
 
 class OSPF(BaseModel):
     neighbor_id: str | None
+    interface_address: str | None
     area: str | None
     state: str | None
     up_time: str | None

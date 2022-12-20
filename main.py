@@ -1,6 +1,7 @@
+import os
 from fastapi import BackgroundTasks, FastAPI, Response, status
 from fastapi.responses import RedirectResponse
-
+from dotenv import load_dotenv
 from actions import (
     router_actions,
     sevone_actions,
@@ -8,11 +9,12 @@ from actions import (
 )
 from schemas.inputs import Router_Enum, Message
 from schemas.devices import DeviceInfo, ClearBindingResponse, DeviceInfoRemoteIds, SevoneGroup
-from schemas.Configs import PhysicalInterface
+from schemas.Configs import PhysicalInterface, OSPF
 from ssh_connector import get_connection
 
-
+load_dotenv()
 app = FastAPI()
+
 
 
 @app.get("/")
@@ -21,30 +23,49 @@ async def read_root():
 
 
 @app.get(
-    "/transceiver_phy",
+    "/transciever_phy",
     responses={202: {"model": PhysicalInterface},404: {"model": Message}, 422: {"model": Message}},
     status_code=202
 )
-def get_transceiver_phy(transceiver: str, host: str, device_type: Router_Enum, response: Response):
-    """Get transceiver information from Cisco devices."""
+def get_transciever_phy(transciever: str, host: str, device_type: Router_Enum, response: Response):
+    """Get transciever information from Cisco devices."""
     try:
-        checker = [int(x) for x in transceiver.split("/")]
+        checker = [int(x) for x in transciever.split("/")]
     except ValueError as e:        
         response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
         return Message(message="Transceiver must contain only numbers and /'s")
     if device_type == Router_Enum.CISCO_XE and len(checker)  != 3:
         response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
-        return Message(message="Cisco XE transceiver must be in the form of x/x/x")
+        return Message(message="Cisco XE transciever must be in the form of x/x/x")
     if device_type == Router_Enum.CISCO_XR and len(checker) != 4:
         response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
-        return Message(message="Cisco XR transceiver must be in the form of x/x/x/x")
-    # ssh_connection = "get_connection(device_type.value, host)"
+        return Message(message="Cisco XR transciever must be in the form of x/x/x/x")
     ssh_connection = get_connection(device_type.value, host)
-    interface = router_actions.get_physical_interface(connection=ssh_connection, transceiver=transceiver, device_type=device_type)
+    interface = router_actions.get_physical_interface(connection=ssh_connection, transciever=transciever, device_type=device_type)
+    ssh_connection.disconnect()
     if interface == None:
         response.status_code = status.HTTP_404_NOT_FOUND
-        return Message(message=f"Optic not present for transceiver te{transceiver}")
+        return Message(message=f"Optic not present for transciever te{transciever}")
     return interface
+
+
+@app.get(
+    "/ospf/",
+    responses={202:{"model": OSPF},404: {"model": Message}},
+    status_code=202
+)
+def get_ospf(response: Response):
+    """Get information from routers for the OSPF IGP protocol."""
+    # TODO make ssh connection dynamic from front end.
+    # TODO rework reponses.
+    ssh_connection = get_connection(device_type="cisco_xr", host = os.getenv("LAB_HOST"))
+    ospf = router_actions.ospf_neighbor_cisco_xr(ssh_connection)
+    ssh_connection.disconnect()
+    if ospf == None:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return Message(message=f"No OSPF neighbors found.")
+    return ospf
+
 
 
 @app.post(
@@ -109,24 +130,8 @@ def device_list(
         return Message(message=str(e))
 
 
-@app.get("/ospf_cisco_xr/")
-def get_ospf_cisco_xr(ospf: str):
-    """Get information from Cisco XR routers for the OSPF IGP protocol."""
-    # TODO rework reponses.
-    ssh_connection = get_connection()
-    response = router_actions.ospf_neighbor_cisco_xr(ssh_connection, ospf)
-    ssh_connection.disconnect()
-    if response:
-        return {"status": 200, "message": "here you are you bugger"}
-    else:
-        return {
-            "status": 404,
-            "message": "No OSPF stats! IT IS BROKEN! Someone call Lucius!",
-        }
-
-
 @app.get("/test")
-def testy_poo():
+def test():
     sevone_actions.get_all_tmarcs()
     return {"message": "Test Complete"}
 

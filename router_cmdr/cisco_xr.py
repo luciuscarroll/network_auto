@@ -15,19 +15,19 @@ def transciever_phy(connection, transciever) -> PhysicalInterface:
                 transciever_details.module_temperature = i_list[1]
             elif i_list[0] == "Transceiver Voltage":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_voltage = i_list[1]
+                transciever_details.transciever_voltage = i_list[1]
             elif i_list[0] == "Tx Bias":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_tx_bias_current = i_list[1]
+                transciever_details.transciever_tx_bias_current = i_list[1]
             elif i_list[0] == "Tx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_tx_power = i_list[1]
+                transciever_details.transciever_tx_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Xcvr Type":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_type = i_list[1]
+                transciever_details.transciever_type = i_list[1]
             elif i_list[0] == "Type":
                 i_list[1] = i_list[1].strip()
                 transciever_details.product_identifier = i_list[1]
@@ -36,40 +36,40 @@ def transciever_phy(connection, transciever) -> PhysicalInterface:
                 transciever_details.vendor_revision = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
             elif i_list[0] == "Rx Power":
                 i_list[1] = i_list[1].strip()
-                transciever_details.transceiver_rx_optical_power = i_list[1]
+                transciever_details.transciever_rx_optical_power = i_list[1]
                 
 
 

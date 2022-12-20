@@ -1,12 +1,12 @@
 class PhysicalInterface:
     __slots__=[
         "module_temperature",
-        "transceiver_voltage",
-        "transceiver_tx_bias_current",
-        "transceiver_tx_power",
-        "transceiver_rx_optical_power",
+        "transciever_voltage",
+        "transciever_tx_bias_current",
+        "transciever_tx_power",
+        "transciever_rx_optical_power",
         "description",
-        "transceiver_type",
+        "transciever_type",
         "product_identifier",
         "vendor_revision",
         "serial_number",
@@ -27,12 +27,12 @@ class PhysicalInterface:
     def __init__(
         self,
         module_temperature= None,
-        transceiver_voltage= None,
-        transceiver_tx_bias_current= None,
-        transceiver_tx_power= None,
-        transceiver_rx_optical_power= None,
+        transciever_voltage= None,
+        transciever_tx_bias_current= None,
+        transciever_tx_power= None,
+        transciever_rx_optical_power= None,
         description= None,
-        transceiver_type= None,
+        transciever_type= None,
         product_identifier= None,
         vendor_revision= None,
         serial_number= None,
@@ -50,12 +50,12 @@ class PhysicalInterface:
         interface= None
     ):
         self.module_temperature = module_temperature
-        self.transceiver_voltage = transceiver_voltage
-        self.transceiver_tx_bias_current = transceiver_tx_bias_current
-        self.transceiver_tx_power = transceiver_tx_power
-        self.transceiver_rx_optical_power = transceiver_rx_optical_power
+        self.transciever_voltage = transciever_voltage
+        self.transciever_tx_bias_current = transciever_tx_bias_current
+        self.transciever_tx_power = transciever_tx_power
+        self.transciever_rx_optical_power = transciever_rx_optical_power
         self.description = description
-        self.transceiver_type = transceiver_type
+        self.transciever_type = transciever_type
         self.product_identifier = product_identifier
         self.vendor_revision = vendor_revision
         self.serial_number = serial_number

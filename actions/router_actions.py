@@ -7,22 +7,22 @@ def ospf_neighbor_cisco_xr(ssh_connection)->OSPF:
     # Get Cisco XR OSPF information.
     response_neighbor_detail = ssh_connection.send_command("show ospf neighbor detail")
     ospf_neighbor_details = OSPF()
-    neighbor_details = response_neighbor_detail.split("\n")
-    neighbor_details.pop(0,1,2)
-    for line in neighbor_details:
+    # neighbor_details = response_neighbor_detail.split("\n")
+    # neighbor_details.pop(0)
+    lines = response_neighbor_detail.split("\n")
+    for line in lines:
+        line = line.strip()
         split_line = line.split(" ")
-        split_line[0] = split_line[0].strip()
         if split_line[0] == "Neighbor":
-            ospf_neighbor_details.neighbor_id = split_line[1]
-    if neighbor_details != None:
-        return neighbor_details
-    else:
-        return None
+            if split_line[2] == "interface":
+                ospf_neighbor_details.neighbor_id = split_line[1]
+                ospf_neighbor_details.interface_address = split_line[4]
+    return ospf_neighbor_details
 
-def transceiver_phy_cisco_xr(ssh_connection,transceiver)->PhysicalInterface:
+def transciever_phy_cisco_xr(ssh_connection,transciever)->PhysicalInterface:
     # Get Cisco XR Physical port information
-    response_controller = ssh_connection.send_command(f"show controllers {transceiver} all")
-    transceiver_details = PhysicalInterface()
+    response_controller = ssh_connection.send_command(f"show controllers {transciever} all")
+    transciever_details = PhysicalInterface()
 
     lines = response_controller.split("\n")
     for line in lines:
@@ -31,39 +31,39 @@ def transceiver_phy_cisco_xr(ssh_connection,transceiver)->PhysicalInterface:
             split_line = line.split(":")
             if split_line[0] == "Xcvr Type":
                 split_line[1] = split_line[1].strip()
-                transceiver_details.transceiver_type = split_line[1]
+                transciever_details.transciever_type = split_line[1]
             elif split_line[0] == "Xcvr Code":
                 split_line[1] = split_line[1].strip()
-                transceiver_details.transceiver_part_number = split_line[1]
+                transciever_details.transciever_part_number = split_line[1]
             elif split_line[0] == "Laser wavelength":
                 split_line[1] = split_line[1].strip()
                 details = split_line[1].split(" (")
-                transceiver_details.laser_wavelength = details[0]
+                transciever_details.laser_wavelength = details[0]
             elif split_line[0] == "Tx Power":
                 split_line[1] = split_line[1].strip()
-                transceiver_details.transmit_power = split_line[1]
+                transciever_details.transmit_power = split_line[1]
             elif split_line[0] == "Rx Power":
                 split_line[1] = split_line[1].strip()
-                transceiver_details.recieve_power = split_line[1]
+                transciever_details.recieve_power = split_line[1]
             elif split_line[0] == "Vendor Name":
                 split_line[1] = split_line[1].strip()
-                transceiver_details.vendor_name = split_line[1]
+                transciever_details.vendor_name = split_line[1]
             elif split_line[0] == "PHY data for interface":
                 split_line[1] = split_line[1].strip()
-                transceiver_details.interface = split_line[1]
+                transciever_details.interface = split_line[1]
             elif split_line[0] == "    Administrative state":
                 split_line[0] = split_line[1].strip()
-                transceiver_details.admin_state = split_line[1]
-    if transceiver_details != None:
-        return transceiver_details
+                transciever_details.admin_state = split_line[1]
+    if transciever_details != None:
+        return transciever_details
     else:
         return None
 
-def transceiver_phy_cisco_xe(ssh_connection,transceiver)->PhysicalInterface:
+def transciever_phy_cisco_xe(ssh_connection,transciever)->PhysicalInterface:
     # Get Cisco XE Physical port information
-    transceiver_split = transceiver.split("/")
-    response_status = ssh_connection.send_command(f"show hw-module subslot 0/{transceiver_split[1]} transceiver {transceiver_split[2]} status")
-    response_idprom = ssh_connection.send_command(f"show hw-module subslot 0/{transceiver_split[1]} transceiver {transceiver_split[2]} idprom detail")
+    transciever_split = transciever.split("/")
+    response_status = ssh_connection.send_command(f"show hw-module subslot 0/{transciever_split[1]} transciever {transciever_split[2]} status")
+    response_idprom = ssh_connection.send_command(f"show hw-module subslot 0/{transciever_split[1]} transciever {transciever_split[2]} idprom detail")
     module_details = PhysicalInterface()
     status = response_status.split("\n")
     status.pop(0)
@@ -85,9 +85,9 @@ def transceiver_phy_cisco_xe(ssh_connection,transceiver)->PhysicalInterface:
         split_line = line.split("= ")
         split_line[0] = split_line[0].strip()   
         if split_line[0] == "Transceiver Type:":
-            module_details.transceiver_type = split_line[1]
+            module_details.transciever_type = split_line[1]
         elif split_line[0] == "Cisco part number":
-            module_details.transceiver_part_number = split_line[1]
+            module_details.transciever_part_number = split_line[1]
         elif split_line[0] == "Vendor Name":
             module_details.vendor_name = split_line[1]
         elif split_line[0] == "DWDM wavelength fraction":
@@ -99,12 +99,40 @@ def transceiver_phy_cisco_xe(ssh_connection,transceiver)->PhysicalInterface:
     else:
         return None
 
-def get_physical_interface(connection: ConnectHandler, transceiver: str, device_type: Router_Enum) -> PhysicalInterface:
+def get_physical_interface(connection: ConnectHandler, transciever: str, device_type: Router_Enum) -> PhysicalInterface:
     interface = None
-    # TODO make call to get port speed for transceiver
-    transceiver = f"te{transceiver}"
+    # TODO make call to get port speed for transciever
+    transciever = f"te{transciever}"
     if device_type == Router_Enum.CISCO_XE:
-        interface = transceiver_phy_cisco_xe(ssh_connection=connection, transceiver=transceiver)
+        interface = transciever_phy_cisco_xe(ssh_connection=connection, transciever=transciever)
     if device_type == Router_Enum.CISCO_XR:
-        interface = transceiver_phy_cisco_xr(ssh_connection=connection, transceiver=transceiver)
+        interface = transciever_phy_cisco_xr(ssh_connection=connection, transciever=transciever)
     return interface
+
+
+
+
+# HERE IS CISCO XR SHO OSPF NEIGHBOR DETAIL OUTPUT
+# '\n
+# Mon Dec 19 19:57:31.753 MST\n
+# \n
+# * Indicates MADJ interface\n
+# # Indicates Neighbor awaiting BFD session up
+# \n
+# \nNeighbors for OSPF 1\n
+# \n
+#  Neighbor 10.225.251.253, interface address 10.225.249.245\n
+#     In the area 0 via interface Bundle-Ether2 \n
+#     Neighbor priority is 1, State is FULL, 6 state changes\n
+#     DR is 0.0.0.0 BDR is 0.0.0.0\n    Options is 0x52  \n
+#     LLS Options is 0x1 (LR)\n    Dead timer due in 00:00:36\n
+#     Neighbor is up for 7w0d\n
+#     Number of DBD retrans during last exchange 0\n
+#     Index 1/1, retransmission queue length 0, number of retransmission 1\n
+#     First 0(0)/0(0) Next 0(0)/0(0)\n
+#     Last retransmission scan length is 1, maximum is 1\n
+#     Last retransmission scan time is 0 msec, maximum is 0 msec\n
+#     LS Ack list: NSR-sync pending 0, high water mark 0\n
+# \n
+# \n
+# Total neighbor count: 1'
