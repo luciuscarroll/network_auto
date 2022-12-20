@@ -3,21 +3,23 @@ from netmiko import ConnectHandler
 from schemas.enums import Router_Enum
 
 
-def ospf_neighbor_cisco_xr(ssh_connection)->OSPF:
+def ospf_neighbor_cisco_xr(ssh_connection)->list[OSPF]:
     # Get Cisco XR OSPF information.
     response_neighbor_detail = ssh_connection.send_command("show ospf neighbor detail")
-    ospf_neighbor_details = OSPF()
-    # neighbor_details = response_neighbor_detail.split("\n")
-    # neighbor_details.pop(0)
+    if response_neighbor_detail == None:
+        return None
+    ospf_neighbors = []
     lines = response_neighbor_detail.split("\n")
     for line in lines:
+        ospf_neighbor_details = OSPF()
         line = line.strip()
         split_line = line.split(" ")
         if split_line[0] == "Neighbor":
             if split_line[2] == "interface":
                 ospf_neighbor_details.neighbor_id = split_line[1]
                 ospf_neighbor_details.interface_address = split_line[4]
-    return ospf_neighbor_details
+                ospf_neighbors.append(ospf_neighbor_details)
+    return ospf_neighbors
 
 def transciever_phy_cisco_xr(ssh_connection,transciever)->PhysicalInterface:
     # Get Cisco XR Physical port information

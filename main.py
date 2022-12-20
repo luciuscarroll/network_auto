@@ -51,7 +51,7 @@ def get_transciever_phy(transciever: str, host: str, device_type: Router_Enum, r
 
 @app.get(
     "/ospf/",
-    responses={202:{"model": OSPF},404: {"model": Message}},
+    responses={202:{"model": list[OSPF]},404: {"model": Message}},
     status_code=202
 )
 def get_ospf(response: Response):
@@ -59,12 +59,12 @@ def get_ospf(response: Response):
     # TODO make ssh connection dynamic from front end.
     # TODO rework reponses.
     ssh_connection = get_connection(device_type="cisco_xr", host = os.getenv("LAB_HOST"))
-    ospf = router_actions.ospf_neighbor_cisco_xr(ssh_connection)
+    ospf_details = router_actions.ospf_neighbor_cisco_xr(ssh_connection)
     ssh_connection.disconnect()
-    if ospf == None:
+    if ospf_details == None:
         response.status_code = status.HTTP_404_NOT_FOUND
         return Message(message=f"No OSPF neighbors found.")
-    return ospf
+    return ospf_details
 
 
 
