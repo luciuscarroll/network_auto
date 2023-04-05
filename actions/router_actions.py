@@ -9,16 +9,26 @@ def ospf_neighbor_cisco_xr(ssh_connection)->list[OSPF]:
     if response_neighbor_detail == None:
         return None
     ospf_neighbors = []
-    lines = response_neighbor_detail.split("\n")
-    for line in lines:
-        ospf_neighbor_details = OSPF()
-        line = line.strip()
-        split_line = line.split(" ")
-        if split_line[0] == "Neighbor":
-            if split_line[2] == "interface":
-                ospf_neighbor_details.neighbor_id = split_line[1]
-                ospf_neighbor_details.interface_address = split_line[4]
-                ospf_neighbors.append(ospf_neighbor_details)
+    raw_ospf = response_neighbor_detail.split("\n\n")
+    raw_ospf = raw_ospf[3:]
+    for raw_neighbor in raw_ospf:
+        #TODO add part to deal with differnt ospf processes ie 1 and 30432
+        lines = raw_neighbor.split("\n")
+        if 'Total neighbor count:' in raw_neighbor:
+            continue
+        ospf_neighbor = OSPF()
+        for line in lines:
+            line = line.strip()
+            split_line = line.split(" ")
+            if split_line[0] == "Neighbor":
+                if split_line[2] == "interface":
+                    ospf_neighbor.neighbor = split_line[1]
+                    ospf_neighbor.interface_address = split_line[4]
+            # elif split_line[0] =="whatever":
+            #     ospf_neighbor.whatever = split_line[1]
+
+
+        ospf_neighbors.append(ospf_neighbor)
     return ospf_neighbors
 
 def transciever_phy_cisco_xr(ssh_connection,transciever)->PhysicalInterface:

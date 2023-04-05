@@ -48,8 +48,21 @@ class PhysicalInterface(BaseModel):
     admin_state: str | None
 
 class OSPF(BaseModel):
-    neighbor_id: str | None
+    neighbor: str | None
     interface_address: str | None
     area: str | None
+    interface: str | None
+    neighbor_priority: str | None
     state: str | None
     up_time: str | None
+    state_changes: str | None
+    designated_router: str | None
+    backup_designated_router: str | None
+    dead_timer: str | None
+    neighbor_uptime: str | None
+    database_description_retransmission: str | None
+    index: str | None
+    retransmission_queue_length: str | None
+    retansmission_number: str | None
+    last_retransmission_scan_length: str | None
+    total_neighbor_count: str | None

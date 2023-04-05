@@ -1,9 +1,12 @@
 from classes.physical_interfaces import PhysicalInterface
+from classes.ospf import Ospf
+
+def ospf(connection, )
 
 def transciever_phy(connection, transciever) -> PhysicalInterface:
     response = connection.send_command(f"show controllers {transciever} all")
 
-    transciever_details = PhysicalInterface(module_temperature="99")
+    transciever_details = PhysicalInterface()
 
     split_responce = response.split("\n")
     for i in split_responce:
