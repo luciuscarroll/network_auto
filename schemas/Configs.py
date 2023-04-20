@@ -47,22 +47,33 @@ class PhysicalInterface(BaseModel):
     interface: str | None
     admin_state: str | None
 
-class OSPF(BaseModel):
+class OSPF_NeighborDetails(BaseModel):
     neighbor: str | None
     interface_address: str | None
     area: str | None
     interface: str | None
     neighbor_priority: str | None
     state: str | None
-    up_time: str | None
     state_changes: str | None
     designated_router: str | None
     backup_designated_router: str | None
+    options: str | None
+    lls_options: str | None
     dead_timer: str | None
     neighbor_uptime: str | None
-    database_description_retransmission: str | None
+    dbd_retrans_last_exchange: str | None
     index: str | None
     retransmission_queue_length: str | None
     retansmission_number: str | None
+    first: str | None
+    next: str | None
     last_retransmission_scan_length: str | None
-    total_neighbor_count: str | None
+    last_retransmission_scan_length_max: str | None
+    last_retransmission_scan_time: str | None
+    last_retransmission_scan_time_max: str | None
+    ls_ack_list: str | None
+
+class OSPF(BaseModel):
+    ospf_details: list[OSPF_NeighborDetails] | None = []
+    ospf_raw_details: str | None
+    total_neighbor_count: int | None
